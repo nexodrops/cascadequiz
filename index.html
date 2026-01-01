@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -385,7 +385,7 @@
     // NOTE: headerDesc is intentionally empty by default. We'll set it only for start & results.
     function updateHeaderTitle(activeSectionId){
       if(activeSectionId === 'start'){
-        headerTitle.textContent = 'Glider IQ Challenge';
+        headerTitle.textContent = 'Cascade Knowledge Challenge';
         headerDesc.textContent = DEFAULT_HEADER_DESC; // show only on home
       } else if(activeSectionId === 'quiz'){
         headerTitle.textContent = currentLevel + ' Level';
@@ -398,7 +398,7 @@
         headerTitle.textContent = 'Final Summary';
         headerDesc.textContent = '';
       } else {
-        headerTitle.textContent = 'Glider IQ Challenge';
+        headerTitle.textContent = 'Cascade Knowledge Challenge';
         headerDesc.textContent = '';
       }
     }
