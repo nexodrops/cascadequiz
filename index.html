@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cascade Quiz — 50 Questions</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    body{
+      background:#0e1118;
+      color:#f1f3f5;
+      font-family:Poppins,system-ui;
+      display:flex;
+      justify-content:center;
+      padding:20px;
+    }
+    .app{
+      max-width:820px;
+      width:100%;
+      background:#0f1620;
+      border-radius:14px;
+      padding:20px;
+      box-shadow:0 20px 40px rgba(0,0,0,.6);
+    }
+    h1,h2{margin:0 0 10px}
+    .muted{color:#8a8f99}
+    .levels{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+    .level{
+      padding:8px 14px;
+      border-radius:10px;
+      border:1px solid #222;
+      cursor:pointer;
+    }
+    .level.active{
+      background:linear-gradient(90deg,#22d3ee,#4ade80);
+      color:#012;
+      border:none;
+      font-weight:700;
+    }
+    .btn{
+      padding:12px 22px;
+      border-radius:12px;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      background:linear-gradient(90deg,#22d3ee,#4ade80);
+      color:#012;
+    }
+    .btn.ghost{
+      background:transparent;
+      color:#f1f3f5;
+      border:1px solid #333;
+    }
+    .question{
+      margin:20px 0;
+      padding:16px;
+      border:1px solid #222;
+      border-radius:12px;
+    }
+    .options{display:grid;gap:10px;margin-top:12px}
+    .option{
+      padding:12px;
+      border-radius:10px;
+      background:#11161b;
+      border:2px solid #1f262b;
+      cursor:pointer;
+    }
+    .option.correct{border-color:#51cf66}
+    .option.incorrect{border-color:#f03e3e}
+    .center{text-align:center}
+    .hidden{display:none}
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <h1>Cascade Knowledge Challenge</h1>
+  <p class="muted">50 questions • 5 levels • Unified margin & neo-brokerage</p>
+
+  <!-- START -->
+  <div id="start">
+    <h2>Select Level</h2>
+    <div class="levels" id="levels">
+      <div class="level active" data-level="Beginner">Beginner</div>
+      <div class="level" data-level="Novice">Novice</div>
+      <div class="level" data-level="Intermediate">Intermediate</div>
+      <div class="level" data-level="Advanced">Advanced</div>
+      <div class="level" data-level="Expert">Expert</div>
+    </div>
+    <button class="btn" id="startBtn">Start Quiz</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="hidden">
+    <div class="muted" id="counter"></div>
+    <div class="question">
+      <h3 id="qtext"></h3>
+      <div class="options" id="opts"></div>
+    </div>
+    <div class="center">
+      <button class="btn" id="nextBtn" disabled>Next</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" class="hidden center">
+    <h2 id="scoreText"></h2>
+    <p id="msg" class="muted"></p>
+    <button class="btn ghost" id="restart">Play Again</button>
+  </div>
+
+</div>
+
+<script>
+/* ================== QUIZ DATA ================== */
+const QUIZ = {
+  "Beginner": [
+    { q:"What is Cascade primarily designed to be?", o:["A centralized crypto exchange","A 24/7 neo-brokerage with unified margin","A DeFi lending protocol","An NFT marketplace"], c:1 },
+    { q:"Which asset types does Cascade aim to support in one account?", o:["Only crypto spot","Crypto perps only","Crypto, US equities, and private markets","Only forex"], c:2 },
+    { q:"What does unified margin mean on Cascade?", o:["Separate balances per market","One balance shared across all instruments","Only USDC margin","Manual collateral transfers"], c:1 },
+    { q:"Is Cascade designed to operate 24/7?", o:["No","Yes","Weekends only","Crypto only"], c:1 },
+    { q:"Which users is Cascade built for?", o:["Institutions only","Retail only","Retail and advanced traders","Banks"], c:2 },
+    { q:"Does Cascade require multiple accounts?", o:["Yes","No","Only for equities","Only crypto"], c:1 },
+    { q:"Which collateral is used for pre-deposits?", o:["ETH","BTC","USDC / fiat","NFTs"], c:2 },
+    { q:"What happens to funds before launch?", o:["Tradable","Locked","Burned","Staked"], c:1 },
+    { q:"Why pre-deposit?", o:["Free leverage","Cascade Points","Guaranteed profit","Airdrop only"], c:1 },
+    { q:"Cascade unifies which markets?", o:["DeFi","CeFi + DeFi","Crypto + TradFi","Prediction markets"], c:2 }
+  ],
+
+  "Novice": [
+    { q:"What trading does Cascade emphasize?", o:["Spot","Perps & derivatives","NFTs","Mining"], c:1 },
+    { q:"How does Cascade simplify exposure?", o:["Manual transfers","Unified margin","Separate wallets","Bridges"], c:1 },
+    { q:"Main UX benefit?", o:["Email trading","One account for all assets","No KYC","Unlimited leverage"], c:1 },
+    { q:"Which fiat rails are supported?", o:["Wire","Stripe / ACH","Cash","PayPal"], c:1 },
+    { q:"Early withdrawal effect?", o:["Nothing","Lose points","Bonus","Ban"], c:1 },
+    { q:"What is CLS?", o:["Collateral Lock","Cascade Liquidity Strategy","Central Limit","Lending"], c:1 },
+    { q:"CLS benefit?", o:["Leverage","Points","Arb","NFTs"], c:1 },
+    { q:"Pain point solved?", o:["Charts","Fragmented accounts","Gas","Price"], c:1 },
+    { q:"Who benefits most?", o:["Passive","Active traders","Miners","Validators"], c:1 },
+    { q:"Only crypto-native?", o:["Yes","No","NFT only","Memes"], c:1 }
+  ],
+
+  "Intermediate": [
+    { q:"Main unified margin risk?", o:["None","Cross-asset liquidation","Spot risk","No liquidation"], c:1 },
+    { q:"Why margin efficiency?", o:["UI","Capital optimization","Tokens","Charts"], c:1 },
+    { q:"Cascade model?", o:["DEX","Neo-brokerage","Prediction","AMM"], c:1 },
+    { q:"Why 24/7 equities?", o:["Speculation","Global access","Mining","Yield"], c:1 },
+    { q:"Cascade abstracts?", o:["Risk","Account fragmentation","Fees","Volatility"], c:1 },
+    { q:"Best strategy fit?", o:["Spot","Multi-asset hedge","NFT mint","Farming"], c:1 },
+    { q:"Why points pre-launch?", o:["Profit","Liquidity","Fix price","Governance"], c:1 },
+    { q:"Reduces friction between?", o:["NFT + gaming","Crypto + TradFi","Options","Mining"], c:1 },
+    { q:"Post-launch funds?", o:["Locked","Gradual unlock","Burn","Token"], c:1 },
+    { q:"CLS not ideal for?", o:["Believers","LPs","Short-term exits","Early users"], c:2 }
+  ],
+
+  "Advanced": [
+    { q:"Systemic risk increased?", o:["Gas","Correlation","UI","Oracle"], c:1 },
+    { q:"Why liquidation complex?", o:["Volatility","UI","API","Charts"], c:0 },
+    { q:"Cascade unifies?", o:["UI","Execution + collateral","Governance","Tokenomics"], c:1 },
+    { q:"Why capital efficiency?", o:["Fees","Optionality","Charts","Speed"], c:1 },
+    { q:"Key difference vs CEX?", o:["Pairs","Neo-brokerage","NFTs","Mining"], c:1 },
+    { q:"Trade-off?", o:["Returns","Shared liquidation risk","No leverage","KYC"], c:1 },
+    { q:"CLS rewards?", o:["HFT","Early liquidity","Late deposits","NFTs"], c:1 },
+    { q:"Why lockups?", o:["Prevent abuse","Gas","Reduce users","Delay"], c:0 },
+    { q:"Competes with?", o:["Banks","Brokerages","DEXs","Prediction"], c:1 },
+    { q:"Long-term winners?", o:["Casual","Power users","Miners","Artists"], c:1 }
+  ],
+
+  "Expert": [
+    { q:"Unified margin requires?", o:["UI","Risk engine","Signals","Price"], c:1 },
+    { q:"Biggest failure?", o:["Charts","Liquidations","Email","Brand"], c:1 },
+    { q:"Why correlation modeling?", o:["Predict price","Avoid cascades","Marketing","UX"], c:1 },
+    { q:"CLS aligns?", o:["Users + whales","Platform + liquidity","Miners","NFTs"], c:1 },
+    { q:"Why withdrawal delay?", o:["Compliance","Stability","UI","KYC"], c:1 },
+    { q:"Who gains edge?", o:["Directional","Cross-market hedgers","NFT flippers","Beginners"], c:1 },
+    { q:"Robinhood-like abstraction?", o:["Risk","Execution complexity","Fees","Leverage"], c:1 },
+    { q:"Why neo-brokerage powerful?", o:["Regulation","Asset convergence","Speculation","Mining"], c:1 },
+    { q:"Long-term vision?", o:["Exchange","Universal account","NFT hub","DEX"], c:1 },
+    { q:"Cascade bets on?", o:["Memes","Market convergence","Mining","Royalties"], c:1 }
+  ]
+};
+
+/* ================== ENGINE ================== */
+const levelsEl = document.getElementById("levels");
+const startBtn = document.getElementById("startBtn");
+const start = document.getElementById("start");
+const quiz = document.getElementById("quiz");
+const result = document.getElementById("result");
+
+const qtext = document.getElementById("qtext");
+const opts = document.getElementById("opts");
+const nextBtn = document.getElementById("nextBtn");
+const counter = document.getElementById("counter");
+
+const scoreText = document.getElementById("scoreText");
+const msg = document.getElementById("msg");
+const restart = document.getElementById("restart");
+
+let level = "Beginner";
+let questions = [];
+let index = 0;
+let score = 0;
+
+levelsEl.onclick = e=>{
+  const l = e.target.dataset.level;
+  if(!l) return;
+  document.querySelectorAll(".level").forEach(x=>x.classList.remove("active"));
+  e.target.classList.add("active");
+  level = l;
+};
+
+startBtn.onclick = ()=>{
+  questions = QUIZ[level];
+  index = 0;
+  score = 0;
+  start.classList.add("hidden");
+  quiz.classList.remove("hidden");
+  load();
+};
+
+function load(){
+  if(index >= questions.length){
+    quiz.classList.add("hidden");
+    result.classList.remove("hidden");
+    const pct = Math.round(score / questions.length * 100);
+    scoreText.textContent = pct + "%";
+    msg.textContent = pct >= 70 ? "Strong understanding of Cascade." : "Review Cascade fundamentals.";
+    return;
+  }
+
+  const q = questions[index];
+  qtext.textContent = q.q;
+  counter.textContent = `Question ${index+1} / ${questions.length}`;
+  opts.innerHTML = "";
+  nextBtn.disabled = true;
+
+  q.o.forEach((text,i)=>{
+    const d = document.createElement("div");
+    d.className = "option";
+    d.textContent = text;
+    d.onclick = ()=>{
+      document.querySelectorAll(".option").forEach(o=>o.onclick=null);
+      if(i === q.c){
+        d.classList.add("correct");
+        score++;
+      }else{
+        d.classList.add("incorrect");
+      }
+      nextBtn.disabled = false;
+    };
+    opts.appendChild(d);
+  });
+}
+
+nextBtn.onclick = ()=>{
+  index++;
+  load();
+};
+
+restart.onclick = ()=>{
+  result.classList.add("hidden");
+  start.classList.remove("hidden");
+};
+</script>
+
+</body>
+</html>
