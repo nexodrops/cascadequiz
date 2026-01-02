@@ -272,16 +272,22 @@
         <p style="margin:0 0 12px 0;color:var(--text-muted)">Nice! You completed all 5 levels. Below is your combined performance.</p>
 
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
-          <div>
-            <div id="aggPercent" class="final-score">0%</div>
-            <div style="color:var(--text-muted);margin-top:6px" id="aggMessage">Message</div>
-          </div>
-          <div style="text-align:right">
-            <div style="color:var(--text-muted)">Total correct</div>
-            <div style="font-size:1.5rem;font-weight:700" id="aggCorrect">0 / 50</div>
-          </div>
-        </div>
+  
+  <!-- LEFT: Percentage + message -->
+  <div>
+    <div id="aggPercent" class="final-score">0%</div>
+    <div id="aggMessage" style="color:var(--text-muted);margin-top:6px">
+      Message
+    </div>
+  </div>
 
+  <!-- RIGHT: Total correct -->
+  <div class="total-correct-box">
+    <div class="label">Total Correct</div>
+    <div class="value" id="aggCorrect">0 / 50</div>
+  </div>
+
+</div>
         <table class="agg-table" aria-hidden="false">
           <thead>
             <tr><th>Level</th><th>Correct</th><th>Wrong</th></tr>
