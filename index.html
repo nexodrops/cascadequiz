@@ -636,10 +636,18 @@
 
     // play again
     playAgainBtn.addEventListener('click', ()=>{
-      startLevel(currentLevel);
-      playAgainBtn.className = 'btn';
-      goHomeBtn.className = 'btn ghost small';
-    });
+  showSection('start');
+
+  // reset UI state
+  document.querySelectorAll('.level-btn').forEach(b=>{
+    b.classList.toggle('sel', b.dataset.level === currentLevel);
+  });
+
+  startBtn.textContent = `Start Quiz (${currentLevel})`;
+
+  playAgainBtn.className = 'btn ghost';
+  goHomeBtn.className = 'btn primary-highlight small';
+});
 
     // chart
     let chartInst = null;
