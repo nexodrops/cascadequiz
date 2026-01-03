@@ -576,8 +576,14 @@
     }
 
     function loadQuestion(){
-      if(qidx >= questions.length) return showResultsForCurrentLevel();
-      const q = questions[qidx];
+  // reset interactions (IMPORTANT)
+  document.getElementById('opts').style.pointerEvents = 'auto';
+  nextBtn.disabled = true;
+
+  if(qidx >= questions.length) return showResultsForCurrentLevel();
+  const q = questions[qidx];
+  ...
+}
       document.getElementById('cur').textContent = qidx+1;
       document.getElementById('qtext').textContent = q.q;
 
