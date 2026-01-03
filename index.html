@@ -67,8 +67,6 @@
 }
     /* Total Correct badge/card */
 .total-correct-box{
-  padding:14px 18px;
-  border-radius:14px;
   background:linear-gradient(
     180deg,
     rgba(56,189,248,0.12),
@@ -77,6 +75,11 @@
   border:1px solid rgba(56,189,248,0.25);
   min-width:140px;
   text-align:right;
+  padding:14px 18px;
+  border-radius:14px;
+
+  /* Center vertically inside flex layout */
+  align-self:center;
 }
 
 .total-correct-box .label{
@@ -393,9 +396,8 @@
         </table>
 
         <div style="margin-top:14px;text-align:center">
-          <button id="resetAll" class="btn">Restart All </button>
-          <button id="chooseLevelAfter" class="btn ghost small" style="margin-left:8px">Next Level</button>
-        </div>
+  <button id="resetAll" class="btn">Restart All</button>
+</div>
       </div>
     </div>
 
