@@ -7,10 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root{
-  --bg-main:#0e1118;
-  --card-bg:#0f1620;
 
   /* Ice Blue Accent */
+  --bg-main:#0e1118;
+  --card-bg:#0f1620;
   --accent-cyan:#38BDF8;   /* main ice blue */
   --accent-mint:#0EA5E9;   /* secondary blue */
 
@@ -28,6 +28,30 @@
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
   }
+    .correct-pill{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:.9rem;
+  background:rgba(56,189,248,0.12);
+  color:var(--accent-cyan);
+}
+
+.wrong-pill{
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:800;
+  font-size:.95rem;
+  background:rgba(240,62,62,0.18);
+  color:#ff6b6b;
+}
+    .level-expert{
+  background:linear-gradient(
+    90deg,
+    rgba(56,189,248,0.08),
+    transparent
+  );
+}
     *{box-sizing:border-box;margin:0;padding:0}
     body{
       background:var(--bg-main);
@@ -497,7 +521,7 @@
         opts.appendChild(d);
       });
 
-      const pct = Math.round((qidx)/questions.length*100);
+      const pct = Math.round(((qidx + 1) / questions.length) * 100);
       document.getElementById('fill').style.width = pct + '%';
       nextBtn.disabled = true;
     }
@@ -531,7 +555,10 @@
       loadQuestion();
     });
 
-    endBtn.addEventListener('click', ()=> showResultsForCurrentLevel());
+    endBtn.addEventListener('click', ()=>{
+  document.getElementById('fill').style.width = '100%';
+  showResultsForCurrentLevel();
+});
 
     function showResultsForCurrentLevel(){
       levelResults[currentLevel] = correctCount;
@@ -603,10 +630,20 @@
 
       aggBody.innerHTML = '';
       rows.forEach(r => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.level}</td><td>${r.correct} / 10</td><td>${r.wrong}</td>`;
-        aggBody.appendChild(tr);
-      });
+  const tr = document.createElement('tr');
+
+  // Expert row subtle highlight
+  if(r.level === 'Expert'){
+    tr.classList.add('level-expert');
+  }
+
+  tr.innerHTML = `
+    <td>${r.level}</td>
+    <td><span class="correct-pill">${r.correct} / 10</span></td>
+    <td><span class="wrong-pill">${r.wrong}</span></td>
+  `;
+  aggBody.appendChild(tr);
+});
 
       aggPercent.textContent = pct + '%';
       aggCorrect.textContent = `${totalCorrect} / ${LEVELS.length * 10}`;
