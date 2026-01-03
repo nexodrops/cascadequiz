@@ -549,7 +549,7 @@
 
     // brand click => home
     brandBtn.addEventListener('click', () => {
-      showSection('start');
+      updateHeaderTitle('start'); // force subtitle on initial load
       document.querySelectorAll('.level-btn').forEach(b=> b.classList.toggle('sel', b.dataset.level === currentLevel));
       startBtn.textContent = `Start Quiz (${currentLevel})`;
     });
