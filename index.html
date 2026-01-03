@@ -803,9 +803,10 @@
       updateHeaderTitle(id);
     }
 
-    // init
-showSection('start');
-updateHeaderTitle('start');
+    // init (safe)
+window.addEventListener('DOMContentLoaded', () => {
+  showSection('start');
+});
 
     // expose for quick debugging
     window._QUIZ = QUIZ;
