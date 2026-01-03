@@ -515,7 +515,6 @@
     const aggCorrect = document.getElementById('aggCorrect');
     const aggMessage = document.getElementById('aggMessage');
     const resetAllBtn = document.getElementById('resetAll');
-    const chooseLevelAfter = document.getElementById('chooseLevelAfter');
 
     // NOTE: headerDesc is intentionally empty by default. We'll set it only for start & results.
     function updateHeaderTitle(activeSectionId){
@@ -575,17 +574,33 @@
       loadQuestion();
     }
 
-    function loadQuestion(){
-  // reset interactions (IMPORTANT)
-  document.getElementById('opts').style.pointerEvents = 'auto';
-  nextBtn.disabled = true;
-
+   function loadQuestion(){
   if(qidx >= questions.length) return showResultsForCurrentLevel();
+
   const q = questions[qidx];
-  ...
+  document.getElementById('cur').textContent = qidx + 1;
+  document.getElementById('qtext').textContent = q.q;
+
+  // prepare option objects with original index preserved, then shuffle for display
+  const optObjs = q.o.map((txt, idx) => ({ txt, orig: idx }));
+  shuffleArray(optObjs);
+
+  const opts = document.getElementById('opts');
+  opts.innerHTML = '';
+
+  optObjs.forEach(optObj => {
+    const d = document.createElement('div');
+    d.className = 'option';
+    d.textContent = optObj.txt;
+    d.dataset.orig = optObj.orig;
+    d.addEventListener('click', ()=> chooseOption(d));
+    opts.appendChild(d);
+  });
+
+  const pct = Math.round(((qidx + 1) / questions.length) * 100);
+  document.getElementById('fill').style.width = pct + '%';
+  nextBtn.disabled = true;
 }
-      document.getElementById('cur').textContent = qidx+1;
-      document.getElementById('qtext').textContent = q.q;
 
       // prepare option objects with original index preserved, then shuffle for display
       const optObjs = q.o.map((txt, idx) => ({ txt, orig: idx }));
@@ -754,13 +769,6 @@
     // reset
     resetAllBtn.addEventListener('click', ()=>{
       for(const k of LEVELS) levelResults[k] = null;
-      playAgainBtn.className = 'btn';
-      goHomeBtn.className = 'btn ghost small';
-      showSection('start');
-      updateHeaderTitle('start');
-    });
-
-    chooseLevelAfter.addEventListener('click', ()=>{
       playAgainBtn.className = 'btn';
       goHomeBtn.className = 'btn ghost small';
       showSection('start');
